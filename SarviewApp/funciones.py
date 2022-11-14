@@ -132,56 +132,6 @@ def adaptarsimu():
     # Devolver el json.
     return eljson
 
-# Pintar el gráfico con los datos del día del simulador versión.
-def plotlysim():
-
-    # Leer datos de la simulacion.
-    datos = selectinflux()
-
-    # Datos de solo hoy.
-    today = datetime.now()
-    today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    end_date = today + timedelta(days=1)
-
-    # Formatos compatibles.
-    datos['Timestamp'] = pd.to_datetime(
-        datos['Timestamp'])
-    today = pd.to_datetime(today)
-    end_date = pd.to_datetime(end_date)
-
-    # Filtra mayor que hoy a las 00:00:00 menor que mañana 00:00:00.
-    filtered_df = datos.loc[(datos['Timestamp'] >= today)
-                            & (datos['Timestamp'] < end_date)]
-
-    # Cambiar el dataframe de width a long.
-    modolong = pd.melt(filtered_df, id_vars='Timestamp')
-
-    # Especificar los nombres.
-    diccionarionombres = {
-        "Timestamp": "Fechas",
-        "value": "Valores",
-        "variable": "Variables"
-    }
-
-    # Crear la figura sencilla de plotly.
-    fig = px.line(modolong, x='Timestamp', y='value', color='variable',
-                  title="Gráfico de datos de simulación", labels=diccionarionombres)
-    
-    # Solo visible al seleccionar.
-    fig.for_each_trace(lambda trace: trace.update(visible="legendonly"))
-
-    return fig
-
-# Descargar csv de los datos del simulador.
-def descargarcsvsimu():
-
-    # Leer datos de la simulación
-    datos = selectinflux()
-
-    # Pasar esos datos a un csv local
-    datos.to_csv('SarviewApp/static/SarviewApp/temp/temp2.csv',
-                 mode='a', sep=';')
-
 #
 # Aquí empieza la simulación de fechas concretas.
 #
@@ -223,11 +173,11 @@ def descargarcsvdesdehasta(desde, hasta):
 
     # Dataframe vacio para sobreescribir el csv.
     df = pd.DataFrame()
-    df.to_csv('SarviewApp/static/SarviewApp/temp/temp3.csv')
+    df.to_csv('SarviewApp/static/SarviewApp/temp/temp2.csv')
 
     # Pasar esos datos a un csv local.
     filtered_df.to_csv(
-        'SarviewApp/static/SarviewApp/temp/temp3.csv', mode='a', sep=';')
+        'SarviewApp/static/SarviewApp/temp/temp2.csv', mode='a', sep=';')
 
 # Pintar el gráfico con los datos en las fechas determinadas.
 def plotlysimchoose(desde, hasta):

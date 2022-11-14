@@ -4,7 +4,7 @@ import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from SarviewApp.funciones import adaptar, adaptarsimu, descargarcsvdesdehasta, descargarcsvsimu, plotly, descargarcsvdia, plotlysim, plotlysimchoose
+from SarviewApp.funciones import adaptar, adaptarsimu, descargarcsvdesdehasta, plotly, descargarcsvdia, plotlysimchoose
 from .forms import UserRegisterForm
 
 #View de login.
@@ -56,26 +56,6 @@ def rodion(request):
 
     return render(request,"SarviewApp/rodion.html",context)
 
-#View especifica de los datos que se simulan.
-def simulacion(request):
-
-    #Adaptar lo leido del csv.
-    eljson = adaptarsimu()
-    eljson = json.loads(eljson)
-
-    #El plot del dataframe de la simulación.
-    elplot = plotlysim()
-
-    #Descargar csv del simulador.
-    descargarcsvsimu()
-
-    #Pasarlo a html.
-    chart = elplot.to_html(config={'displaylogo': False})
-
-    #Darles un nombre al que llamar en el html.
-    context = {'d': eljson,'chart': chart}
-
-    return render(request, "SarviewApp/simulacion.html", context)
 
 #View de dashboard diferente al anterior con request de fechas.
 def dashboard(request):
