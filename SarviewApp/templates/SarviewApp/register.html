@@ -1,0 +1,32 @@
+{% load static %}
+
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Sarview</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="60">
+    <link rel="icon" type="image/x-icon" href="{% static 'SarviewApp/imagenes/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'SarviewApp/styles.css' %}">
+</head>
+
+<body class="bodyregister">
+    <div>
+        <img class="imglog" src="{% static 'SarviewApp/imagenes/sar.png' %}" height="110">
+        <h3>REGISTRARSE</h3>
+        <form class="form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="buttondiv"><button class="button" type="submit">Registrarse</button></div>
+        </form>
+        <a id="volverloginregis" href="/">¿Ya tienes una cuenta?</a>
+        <a id="barraenlacesregis">|</a>
+        <a id="entrarsinregis" href="lista/">Entrar sin registrar</a>
+    </div> 
+</body>
+
+</html>

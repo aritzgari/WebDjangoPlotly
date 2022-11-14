@@ -1,0 +1,53 @@
+{% extends "SarviewApp/plantillasidebar.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div id="main">
+  <div class="teal">
+    <button id="openNav" class="button" onclick="abrir()">&#9776;</button>
+    <div class="container">
+      <h1>Rodion</h1>
+    </div>
+    {{ chart|safe }}
+    <table id="tablasim">
+      <thead>
+        <tr>
+          <th>Datetime</th>
+          <th>Tachometer 1</th>
+          <th>Temperature 1</th>
+          <th>Tachometer 2</th>
+          <th>Temperature 2</th>
+          <th>Tachometer 3</th>
+          <th>Temperature 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if d %}
+        {% for i in d %}
+        <tr>
+          <td>{{i.datetime}}</td>
+          <td>{{i.tachometer1}}</td>
+          <td>{{i.temperature1}}</td>
+          <td>{{i.tachometer2}}</td>
+          <td>{{i.temperature2}}</td>
+          <td>{{i.tachometer3}}</td>
+          <td>{{i.temperature3}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+  <div class="cargadescarga">
+    <div class="tituloscardes">
+      <h1>Descargar datos</h1>
+      <p class="texto">Descarga los datos del gráfico anterior en formato .csv (excel).</p>
+    </div>
+    <a class="boton" href="{% static 'SarviewApp/temp/temp.csv' %}" download="csvsimu">Descargar</a>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

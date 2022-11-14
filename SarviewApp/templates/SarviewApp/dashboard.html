@@ -1,0 +1,60 @@
+{% extends "SarviewApp/plantillasidebar.html" %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+    <div class="teal">
+        <button id="openNav" class="button" onclick="abrir()">&#9776;</button>
+        <div class="container">
+            <h1>Simulación</h1>
+        </div>
+        {{ chart|safe }}
+        <table id="tablasim">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Entero</th>
+                    <th>Flotante</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if d %}
+                {% for i in d %}
+                <tr>
+                    <td>{{i.Timestamp}}</td>
+                    <td>{{i.Entero}}</td>
+                    <td>{{i.Flotante}}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="cargadescarga">
+            <div class="tituloscardes">
+                <h1>Cargar datos</h1>
+            </div>
+            <form method="get">
+                <div class="formulario">
+                    {{ form }}
+                    <label>Desde:</label>
+                    <input type="date" id="desde" name="desde">
+                </div>
+                <div class="formulario">
+                    {{ form }}
+                    <label>Hasta:</label>
+                    <input type="date" id="hasta" name="hasta">
+                </div>
+                <div class="buttondiv" id="download"><input class="boton" type="submit" value="Cargar" onclick="fechas()"></div>
+            </form>
+        </div>
+        <div class="cargadescarga">
+            <div class="tituloscardes">
+                <h1>Descargar datos</h1>
+                <p class="texto">Descarga los datos del gráfico anterior en formato .csv (excel).</p>
+            </div>
+            <a class="boton" href="{% static 'SarviewApp/temp/temp3.csv' %}" download="csvsimu">Descargar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sarview</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{% static 'SarviewApp/imagenes/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'SarviewApp/styles.css' %}">
+    <script src="{% static 'SarviewApp/interacciones.js' %}"></script>
+</head>
+<body class="bodylogin">
+    <div id="logindiv">
+        <img class="imglog" src="{% static 'SarviewApp/imagenes/sar.png' %}" height="90">
+        <h3>LOGIN</h3>
+        <form class="form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="buttondiv"><button class="button" type="submit">Iniciar Sesión</button></div>
+        </form>
+        <a onclick="registrar()" class="enlacecambio" href="register/" title="Solo los usuarios registrados pueden añadir nuevos.">¿No tienes una cuenta?</a>
+    </div>
+</body>
+
+</html>
+
+

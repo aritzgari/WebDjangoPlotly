@@ -1,0 +1,46 @@
+{% extends "SarviewApp/plantillaheaderfooter.html" %}
+
+{% load static %}
+
+{% block content %}
+<head>
+
+  <!-- <meta http-equiv="refresh" content="60"> -->
+
+</head>
+
+<div class="general">
+  <h1>Simulación</h1>
+
+  {{ chart|safe }}
+  
+  <div class="tabladataframe">
+    <table id="tablasim">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Entero</th>
+          <th>Flotante</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if d %}
+        {% for i in d %}
+        <tr>
+          <td>{{i.Timestamp}}</td>
+          <td>{{i.Entero}}</td>
+          <td>{{i.Flotante}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+    <div id="downloadsim">
+      <h4>Descarga el csv con los datos de hoy:</h4>
+      <a id="imagendownloadsim" href="{% static 'SarviewApp/temp/temp2.csv' %}" download="csvsimu">
+        <img src="{% static 'SarviewApp/imagenes/download.png' %}" alt="Download" width="90" height="70">
+      </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,239 @@
+html{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    background-image: url("imagenes/fondo.jpg");
+	background-size: cover;
+    background-position:center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    overflow-y: auto;
+}
+nav{
+    background-color:white;
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    text-align: left;
+    padding-top: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding-left: 2%;
+    display: flex;
+}
+h1 {
+    font-size: 50;
+    color: rgb(75, 125, 178);
+}
+body {
+    line-height: 30px;
+    font-size: 16px;
+    width: 90%;
+    margin: auto;
+}
+footer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    padding-left: 30px;
+    background-color: white;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-top: 1px solid black;
+}
+th {
+    font-size: 13px;
+    font-weight: bolder;
+    padding: 4px;
+    background: #b9c9fe;
+    border-top: 4px solid #aabcfe;
+    border-bottom: 1px solid #fff;
+    color: #039;
+}
+td {
+    padding: 4px;
+    background: #e8edff;
+    border-bottom: 1px solid #fff;
+    color: #669;
+    border-top: 1px solid transparent;
+}
+
+#lista{
+    font-size: 30px;
+    margin-top: 5px;
+    margin-left: 35%;
+    color: rgb(75, 125, 178);
+    text-decoration: none;
+    font-weight: 850;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+#lista:hover {
+    background-color: rgb(75, 125, 178);
+    color: white;
+    margin-bottom: 13px;
+    border-radius: 2px;    
+}
+#logoutbutton{
+    padding-left: 45%;
+}
+.general{
+    border: 2px solid black;
+    border-bottom: 1px solid black;
+    background-color: white;
+    text-align: justify;
+    color: black;
+    padding-right: 2%;
+    padding-left: 2%;  
+    padding-top: 10px;   
+    padding-bottom: 10px;   
+}
+.enlacesfooter{
+    float:right;
+    margin-top: 5px;
+    padding-top: 10px;
+    padding-right: 5px;
+}
+.textofooter{
+    color: rgb(75,125,178);
+}
+.bodylogin{
+    width: fit-content;
+    margin-top: 180px;
+    border: 3px solid black;
+    border-bottom: 1px solid black;
+    background-color: white;
+    color: black;
+    padding-left: 20px;  
+    padding-top: 20px;   
+    padding-bottom: 20px;
+    padding-right: 20px; 
+}
+.logout{
+    width: fit-content;
+    margin-top: 180px;
+    border: 3px solid black;
+    background-color: white;
+    color: black;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+}
+.bodyregister{
+    width: fit-content;
+    margin-top: 140px;
+    border: 3px solid black;
+    border-bottom: 1px solid black;
+    background-color: white;
+    color: black;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+
+}
+.imglog{
+    margin-left: 10%;
+}
+#logindiv{
+    max-width: 300px;
+}
+.button{
+    background-color: rgb(75, 125, 178);
+    border: 2px solid rgb(40, 87, 138);
+    color: white;
+    padding: 6px 18px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 2px;
+}
+.buttondiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form{
+    margin-bottom: 10px;
+}
+.enlacecambio{
+    text-decoration: none;
+    padding-top: 5px;
+}
+.tabla{
+    width: fit-content;
+    display: block;
+    font-size: 12px;
+    margin-right: 10px;
+    text-align: center;
+    height: 250px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+.borde{
+    border: 1px solid rgb(8, 59, 102);
+    border-radius: 2px;
+}
+.tabla_lista{
+    width: fit-content;
+    text-align: center;
+    font-size: 14px;
+}
+#imagenrod{
+    border: 1px solid rgb(8, 59, 102);
+    border-radius: 2px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#volverlogin{
+    padding-top: 10px;
+    margin-left: 135px;
+}
+.tabladataframe{
+    float: left;
+}
+.download{
+   margin-left: 60%;
+}
+#imagendownload{
+    margin-left: 17%;
+}
+#limpiar{
+    clear: left;
+}
+#tablasim {
+    margin-left: 75px;
+    width: fit-content;
+    display: block;
+    font-size: 12px;
+    margin-right: 10px;
+    text-align: center;
+    height:250px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+#downloadsim {
+    margin-top: 50px;
+    margin-left: 45%;
+    padding-bottom: 80px;
+}
+#imagendownloadsim {
+    margin-left: 12%;
+}
+#entrarsinregis{
+    text-decoration: none;
+    padding-left: 6px;
+}
+#volverloginregis{
+    text-decoration: none;
+    padding-right: 5px;
+}
+#barraenlacesregis{
+    font-size: 17px;
+    color: rgb(85, 26, 139);
+}

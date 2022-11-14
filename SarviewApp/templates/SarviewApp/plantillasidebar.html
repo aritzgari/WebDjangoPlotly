@@ -1,0 +1,30 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Sarview</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{% static 'SarviewApp/imagenes/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'SarviewApp/styles2.css' %}">
+    <script src="{% static 'SarviewApp/interacciones.js' %}"></script>
+    <script src="{% static 'SarviewApp/jquery.min.js' %}"></script>
+</head>
+<body class="dashboard">
+    <div class="sidebar bar-block card animate-left" style="display:none" id="mySidebar">
+        <button class="bar-item button" onclick="cerrar()">Close &times;</button>
+        <a href="lista/" class="bar-item button">Home</a>
+        <a href="dashboard/" class="bar-item button">Simulación</a>
+        <a href="rodion/" class="bar-item button">Rodion</a>
+        <a id="logout" href="logout/" class="bar-item button">Logout</a>
+    </div>
+{% block content %}
+
+{% endblock %}
+
+</body>
+
+</html>

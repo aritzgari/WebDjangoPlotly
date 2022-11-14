@@ -1,0 +1,46 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sarview</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta http-equiv="refresh" content="60" > -->
+  <link rel="icon" type="image/x-icon" href="{% static 'SarviewApp/imagenes/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'SarviewApp/styles.css' %}">
+  <script src="{% static 'SarviewApp/jquery.min.js' %}"></script>
+  <script src="{% static 'SarviewApp/interacciones.js' %}"></script>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="https://www.sarralle.com/en" target="_blank" title="Visita nuestra página"> <img
+          src="{% static 'SarviewApp/imagenes/sar.png' %}" width="130" height="50"></a>
+      <a id="lista" href="lista/">Lista</a>
+      <a id="logoutbutton" href="logout/" title="Cerrar sesión"> <img
+            src="{% static 'SarviewApp/imagenes/logout.png' %}" width="60" height="50"></a>
+    </nav>
+  </header>
+
+{% block content %}
+
+{% endblock %}
+
+  <footer>
+    <a class="enlacesfooter" href="https://twitter.com" target="_blank" title="Síguenos en twitter"> <img
+        src="{% static 'SarviewApp/imagenes/twitter.png' %}" width="30" height="30"></a>
+    <a class="enlacesfooter" href="https://www.youtube.com/" target="_blank"
+      title="No olvides visitar nuestro canal de you tube"> <img src="{% static 'SarviewApp/imagenes/youtube.png' %}" width="30" height="30"></a>
+    <a class="enlacesfooter" href="https://www.linkedin.com" target="_blank" title="También estamos en LinkedIn">
+      <img src="{% static 'SarviewApp/imagenes/linkedin.png' %}" width="30" height="30"></a>
+    <a class="enlacesfooter" href="https://www.facebook.com" target="_blank" title="Dale like en facebook"> <img
+      src="{% static 'SarviewApp/imagenes/facebook.png' %}" width="30" height="30"></a>
+    <p class="textofooter">® Todos los derechos reservados </p>
+  </footer>
+  
+</body>
+
+</html>
