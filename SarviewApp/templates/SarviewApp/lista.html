@@ -6,13 +6,13 @@
 
 <div class="general">
   <div>
-      {% if messages %}
-        {% for message in messages %}
-      <div class="notification {{ message.tags }}">
-            {{ message }}
-      </div>
-        {% endfor %}
-      {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="notification {{ message.tags }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
   </div>
   <h1>Lista</h1>
   <table class="tabla_lista">
@@ -20,14 +20,17 @@
       <tr>
         <th class="borde">Rodion</th>
         <th class="borde">Simulación</th>
+        <th class="borde">PLC</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td id="imagenrod"><a href="rodion/" title="Ver detalles de Rodion"> <img
-                src="{% static 'SarviewApp/imagenes/rodillos.png' %}" width="60" height="50"></a></td>
+              src="{% static 'SarviewApp/imagenes/rodillos.png' %}" width="60" height="50"></a></td>
         <td id="imagenrod"><a href="dashboard/" title="Ver detalles simulados"> <img
-                src="{% static 'SarviewApp/imagenes/simu.png' %}" width="60" height="50"></a></td>
+              src="{% static 'SarviewApp/imagenes/simu.png' %}" width="60" height="50"></a></td>
+        <td id="imagenrod"><a href="datosplc/" title="Ver detalles simulados"> <img
+              src="{% static 'SarviewApp/imagenes/plc.png' %}" width="60" height="50"></a></td>
       </tr>
     </tbody>
   </table>

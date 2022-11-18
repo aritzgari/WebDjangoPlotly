@@ -7,7 +7,7 @@ import plotly.express as px
 # Aqui se empieza a trabajar con los datos almacenados en el csv de Rodion.
 #
 
-# Primera lectura de los datos.
+# Lectura de datos del csv de Rodion
 def leer():
     # Leer datos de csv.
     datos = pd.read_csv(
@@ -39,7 +39,7 @@ def leer():
 
     return result
 
-# Adapta los datos a json.
+# Adapta los datos obtenidos a formato json para poder mostrarlos luego por html.
 def adaptar():
 
     # Coger los datos.
@@ -88,13 +88,13 @@ def descargarcsvdia():
                  mode='a', sep=';')
 
 #
-# Aqui empiezan los datos de simulación.
+# Lectura de datos de simulación.
 #
 
 # Bajar los datos de la base de datos de influx.
 def selectinflux():
 
-    # generar el cliente de influx.
+    # Generar el cliente de influx.
     client = InfluxDBClient(host='localhost', port=8086)
 
     # Seleccionar la base de datos concreta que tiene la información.
@@ -103,10 +103,10 @@ def selectinflux():
     # Hacer la query para seleccionar todo lo de la base de datos.
     result = client.query('SELECT * FROM "simulacion"')
 
-    # Coger solo los datos de medida de la base de datos.
+    # Coger los datos de medida de la base de datos.
     points = list(result.get_points(measurement='simulacion'))
 
-    # Generar un dataframe del diccionario generado en la línea anterior.
+    # Generar un dataframe del diccionario de la línea anterior.
     df = pd.DataFrame.from_dict(points)
 
     # Renombrar la columna de time para que sea compatible con el resto de funciones más adelante.
@@ -118,35 +118,35 @@ def selectinflux():
     # Cambiar el formato de datetime a string para mostrarlo más facil.
     df['Timestamp'] = df['Timestamp'].astype(str)
 
+    client.close()
+
     return df
 
 # Adaptar los datos leidos del simulador a json.
 def adaptarsimu():
 
-    # Coger los datos.
+    # Coger los datos de la BD de influx.
     datos = selectinflux()
 
-    # De dataframe a json.
+    # De dataframe a json para luego visualizar en html raw.
     eljson = datos.to_json(orient='records')
 
     # Devolver el json.
     return eljson
 
-#
-# Aquí empieza la simulación de fechas concretas.
-#
+# Filtra los datos mostrados según las fechas indicadas.
 def fechasconcretas(desde, hasta):
 
     # Leer datos de la simulación.
     datos = selectinflux()
 
-    # Datos base de hoy y mañana.
+    # Datos base de hoy y mañana para comparar.
     today = datetime.now()
     today = today.replace(hour=0, minute=0, second=0, microsecond=0)
     today = pd.to_datetime(today)
     mañana = pd.to_datetime(today) + timedelta(days=1)
 
-    # Formatos compatibles.
+    # Formatos compatibles de las fechas anteriores.
     datos['Timestamp'] = pd.to_datetime(datos['Timestamp'])
     desde = pd.to_datetime(desde)
     hasta = pd.to_datetime(hasta) + timedelta(days=1)
@@ -168,7 +168,7 @@ def fechasconcretas(desde, hasta):
 # Descargar los datos del simulados entre las fechas introducidas.
 def descargarcsvdesdehasta(desde, hasta):
 
-    # Filtrar con fechas.
+    # Llamar a filtrado con fechas.
     filtered_df = fechasconcretas(desde, hasta)
 
     # Dataframe vacio para sobreescribir el csv.
@@ -202,5 +202,133 @@ def plotlysimchoose(desde, hasta):
     # Cambios en el gráfico.
     fig.update_layout(font=dict(size=14),  title="Gráfico de datos de simulación", yaxis_title='Valores',
                       xaxis_title='Fechas')
-    
+
+    return fig
+
+
+#
+# Lectura de datos de plc.
+#
+
+#Conseguir la información desde influx.
+def selectinfluxplc():
+
+    # generar el cliente de influx.
+    client = InfluxDBClient(host='localhost', port=8086)
+
+    # Seleccionar la base de datos concreta que tiene la información.
+    client.switch_database('plc')
+
+    # Hacer la query para seleccionar todo lo de la base de datos.
+    result = client.query('SELECT * FROM "plc"')
+
+    # Coger solo los datos de medida de la base de datos.
+    points = list(result.get_points(measurement='plc'))
+
+    # Generar un dataframe del diccionario generado en la línea anterior.
+    df = pd.DataFrame.from_dict(points)
+
+    # Renombrar la columna de time para que sea compatible con el resto de funciones más adelante.
+    df.rename(columns={'time': 'Timestamp'}, inplace=True)
+
+    # Cambiar el formato de horas a uno que no tenga en cuenta la zona horaria.
+    df['Timestamp'] = pd.to_datetime(df['Timestamp']).dt.tz_localize(None)
+
+    # Cambiar el formato de datetime a string para mostrarlo más facil.
+    df['Timestamp'] = df['Timestamp'].astype(str)
+
+    client.close()
+
+    return df
+
+# Adaptar los datos leidos del plc a json.
+def adaptarplc():
+
+    # Coger los datos.
+    datos = selectinfluxplc()
+
+    # De dataframe a json.
+    eljson = datos.to_json(orient='records')
+
+    # Devolver el json.
+    return eljson
+
+#Entre fechas datos de plc.
+def fechasconcretasplc(desde, hasta):
+
+    # Leer datos de la base de datos con la información del plc.
+    datos = selectinfluxplc()
+
+    # Datos base de hoy y mañana.
+    today = datetime.now()
+    today = today.replace(hour=0, minute=0, second=0, microsecond=0)
+    today = pd.to_datetime(today)
+    mañana = pd.to_datetime(today) + timedelta(days=1)
+
+    # Formatos compatibles entre la columna timestamp y las fechas seleccionadas.
+    datos['Timestamp'] = pd.to_datetime(datos['Timestamp'])
+    desde = pd.to_datetime(desde)
+    hasta = pd.to_datetime(hasta) + timedelta(days=1)
+
+    # Adaptación de fechas para que no sean imposibles.
+    if hasta >= today:
+        hasta = mañana
+    if desde >= today:
+        hasta = mañana
+        desde = today
+    if desde == hasta and desde != today:
+        hasta = pd.to_datetime(hasta) + timedelta(days=1)
+
+    # Filtrar por fechas.
+    filtered_df = datos.loc[(datos['Timestamp'] >= desde)
+                            & (datos['Timestamp'] < hasta)]
+    return filtered_df
+
+# Descargar los datos del plc entre las fechas introducidas.
+def descargarcsvdesdehastaplc(desde, hasta):
+
+    # Filtrar con fechas.
+    filtered_df = fechasconcretasplc(desde, hasta)
+
+    # Dataframe vacio para sobreescribir el csv.
+    df = pd.DataFrame()
+    df.to_csv('SarviewApp/static/SarviewApp/temp/temp3.csv')
+
+    # Pasar esos datos a un csv local.
+    filtered_df.to_csv(
+        'SarviewApp/static/SarviewApp/temp/temp3.csv', mode='a', sep=';')
+
+# Pintar el gráfico con los datos en las fechas determinadas.
+def plotlyplcchoose(desde, hasta):
+
+    # Filtrado según fechas.
+    filtered_df = fechasconcretasplc(desde, hasta)
+
+    #Poner como int para visualizar
+    filtered_df["EntradaNode"] = filtered_df["EntradaNode"].astype(int)
+
+    #Poner como int para visualizar
+    filtered_df["Salida"] = filtered_df["Salida"].astype(int)
+
+    # Cambiar el dataframe de width a long.
+    modolong = pd.melt(filtered_df, id_vars='Timestamp')
+
+    # Especificar los nombres.
+    diccionarionombres = {
+        "Timestamp": "Fecha",
+        "value": "Valor",
+        "variable": "Variable"
+    }
+
+    # Crear la figura sencilla de plotly.
+    fig = px.line(modolong, x='Timestamp',
+                  labels=diccionarionombres, y='value', color='variable')
+
+    # Cambios en el gráfico.
+    fig.update_layout(font=dict(size=14),  title="Gráfico de datos de plc", yaxis_title='Valores',
+                      xaxis_title='Fechas')
+
+    #Solo visible los seleccionados                  
+    #fig.for_each_trace(lambda trace: trace.update(visible="legendonly"))
+
     return fig

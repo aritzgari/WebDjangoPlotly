@@ -4,7 +4,7 @@ import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from SarviewApp.funciones import adaptar, adaptarsimu, descargarcsvdesdehasta, plotly, descargarcsvdia, plotlysimchoose
+from SarviewApp.funciones import adaptar, adaptarplc, adaptarsimu, descargarcsvdesdehasta, descargarcsvdesdehastaplc, plotly, descargarcsvdia, plotlyplcchoose, plotlysimchoose
 from .forms import UserRegisterForm
 
 #View de login.
@@ -60,7 +60,7 @@ def rodion(request):
 #View de dashboard diferente al anterior con request de fechas.
 def dashboard(request):
     
-    #Adaptar lo leido del csv al completo.
+    #Adaptar lo leido del csv al completo para mostrarlo en html.
     eljson = adaptarsimu()
     eljson = json.loads(eljson)
 
@@ -87,3 +87,34 @@ def dashboard(request):
     context = {'d': eljson, 'chart': chart}
 
     return render(request, "SarviewApp/dashboard.html", context)
+
+#View de dashboard con datos plc y request de fechas.
+def plc(request):
+
+    #Adaptar lo leido del csv al completo.
+    eljson = adaptarplc()
+    eljson = json.loads(eljson)
+
+    #Crear desde hasta.
+    desde = datetime.now()
+    desde = desde.replace(hour=0, minute=0, second=0, microsecond=0)
+    hasta = desde + timedelta(days=1)
+
+    #Si se ha hecho el request se sobreescribe por los valores por defecto.
+    if request.GET:
+        desde = request.GET['desde']
+        hasta = request.GET['hasta']
+
+    #Descargar csv del simulador.
+    descargarcsvdesdehastaplc(desde, hasta)
+
+    #El plot del dataframe de la simulación.
+    elplot = plotlyplcchoose(desde, hasta)
+
+    #Pasarlo a html. La parte de config te permite quitar el logo con la publi de plotly.
+    chart = elplot.to_html(config={'displaylogo': False})
+
+    #Darles un nombre al que llamar en el html.
+    context = {'d': eljson, 'chart': chart}
+
+    return render(request, "SarviewApp/datosplc.html", context)

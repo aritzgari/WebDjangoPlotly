@@ -1,4 +1,3 @@
-import datetime
 from django import forms
 from django.forms import DateInput, PasswordInput
 from django.contrib.auth.forms import UserCreationForm

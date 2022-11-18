@@ -80,6 +80,9 @@ button{
     text-align: center;
     cursor: pointer;
     white-space: nowrap;
+    font-size: 14px;
+}
+.letra{
     font-size: 18px;
 }
 .button:disabled {
