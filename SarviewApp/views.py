@@ -60,10 +60,6 @@ def rodion(request):
 #View de dashboard diferente al anterior con request de fechas.
 def dashboard(request):
     
-    #Adaptar lo leido del csv al completo para mostrarlo en html.
-    eljson = adaptarsimu()
-    eljson = json.loads(eljson)
-
     #Crear desde hasta.
     desde = datetime.now()
     desde = desde.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -83,6 +79,10 @@ def dashboard(request):
     #Pasarlo a html. La parte de config te permite quitar el logo con la publi de plotly.
     chart = elplot.to_html(config={'displaylogo': False})
 
+    #Adaptar lo leido del csv al completo para mostrarlo en html.
+    eljson = adaptarsimu(desde,hasta)
+    eljson = json.loads(eljson)
+
     #Darles un nombre al que llamar en el html.
     context = {'d': eljson, 'chart': chart}
 
@@ -90,10 +90,6 @@ def dashboard(request):
 
 #View de dashboard con datos plc y request de fechas.
 def plc(request):
-
-    #Adaptar lo leido del csv al completo.
-    eljson = adaptarplc()
-    eljson = json.loads(eljson)
 
     #Crear desde hasta.
     desde = datetime.now()
@@ -113,6 +109,10 @@ def plc(request):
 
     #Pasarlo a html. La parte de config te permite quitar el logo con la publi de plotly.
     chart = elplot.to_html(config={'displaylogo': False})
+
+    #Adaptar lo leido del csv al completo.
+    eljson = adaptarplc(desde, hasta)
+    eljson = json.loads(eljson)
 
     #Darles un nombre al que llamar en el html.
     context = {'d': eljson, 'chart': chart}

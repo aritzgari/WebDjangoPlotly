@@ -1,3 +1,4 @@
+import time
 from influxdb import InfluxDBClient
 from datetime import datetime, timedelta
 import pandas as pd
@@ -92,7 +93,30 @@ def descargarcsvdia():
 #
 
 # Bajar los datos de la base de datos de influx.
-def selectinflux():
+def selectinflux(desde, hasta):
+
+    #Para comparar.
+    today = datetime.now()
+    today = today.replace(hour=0, minute=0, second=0, microsecond=0)
+    today = pd.to_datetime(today)
+    mañana = pd.to_datetime(today) + timedelta(days=1)
+
+    # Formatos compatibles entre la columna timestamp y las fechas seleccionadas.
+    desde = pd.to_datetime(desde)
+    hasta = pd.to_datetime(hasta) + timedelta(days=1)
+
+    # Adaptación de fechas para que no sean imposibles.
+    if hasta >= today:
+        hasta = mañana
+    if desde >= today:
+        hasta = mañana
+        desde = today
+    if desde == hasta and desde != today:
+        hasta = pd.to_datetime(hasta) + timedelta(days=1)
+
+    #Pasar de datetime a unix.
+    desde = int(time.mktime(desde.timetuple()) * 1000000000)
+    hasta = int(time.mktime(hasta.timetuple()) * 1000000000)
 
     # Generar el cliente de influx.
     client = InfluxDBClient(host='localhost', port=8086)
@@ -101,7 +125,7 @@ def selectinflux():
     client.switch_database('simulacion')
 
     # Hacer la query para seleccionar todo lo de la base de datos.
-    result = client.query('SELECT * FROM "simulacion"')
+    result = client.query(f'SELECT * FROM "simulacion" where time > {desde} and time < {hasta}')
 
     # Coger los datos de medida de la base de datos.
     points = list(result.get_points(measurement='simulacion'))
@@ -123,10 +147,10 @@ def selectinflux():
     return df
 
 # Adaptar los datos leidos del simulador a json.
-def adaptarsimu():
+def adaptarsimu(desde,hasta):
 
     # Coger los datos de la BD de influx.
-    datos = selectinflux()
+    datos = selectinflux(desde,hasta)
 
     # De dataframe a json para luego visualizar en html raw.
     eljson = datos.to_json(orient='records')
@@ -134,42 +158,11 @@ def adaptarsimu():
     # Devolver el json.
     return eljson
 
-# Filtra los datos mostrados según las fechas indicadas.
-def fechasconcretas(desde, hasta):
-
-    # Leer datos de la simulación.
-    datos = selectinflux()
-
-    # Datos base de hoy y mañana para comparar.
-    today = datetime.now()
-    today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    today = pd.to_datetime(today)
-    mañana = pd.to_datetime(today) + timedelta(days=1)
-
-    # Formatos compatibles de las fechas anteriores.
-    datos['Timestamp'] = pd.to_datetime(datos['Timestamp'])
-    desde = pd.to_datetime(desde)
-    hasta = pd.to_datetime(hasta) + timedelta(days=1)
-
-    # Adaptación de fechas para que no sean imposibles.
-    if hasta >= today:
-        hasta = mañana
-    if desde >= today:
-        hasta = mañana
-        desde = today
-    if desde == hasta and desde != today:
-        hasta = pd.to_datetime(hasta) + timedelta(days=1)
-
-    # Filtrar por fechas.
-    filtered_df = datos.loc[(datos['Timestamp'] >= desde)
-                            & (datos['Timestamp'] < hasta)]
-    return filtered_df
-
 # Descargar los datos del simulados entre las fechas introducidas.
 def descargarcsvdesdehasta(desde, hasta):
 
     # Llamar a filtrado con fechas.
-    filtered_df = fechasconcretas(desde, hasta)
+    filtered_df = selectinflux(desde, hasta)
 
     # Dataframe vacio para sobreescribir el csv.
     df = pd.DataFrame()
@@ -183,7 +176,7 @@ def descargarcsvdesdehasta(desde, hasta):
 def plotlysimchoose(desde, hasta):
 
     # Filtrado según fechas.
-    filtered_df = fechasconcretas(desde, hasta)
+    filtered_df = selectinflux(desde, hasta)
 
     # Cambiar el dataframe de width a long.
     modolong = pd.melt(filtered_df, id_vars='Timestamp')
@@ -211,7 +204,30 @@ def plotlysimchoose(desde, hasta):
 #
 
 #Conseguir la información desde influx.
-def selectinfluxplc():
+def selectinfluxplc(desde,hasta):
+
+   #Para comparar.
+    today = datetime.now()
+    today = today.replace(hour=0, minute=0, second=0, microsecond=0)
+    today = pd.to_datetime(today)
+    mañana = pd.to_datetime(today) + timedelta(days=1)
+
+    # Formatos compatibles entre la columna timestamp y las fechas seleccionadas.
+    desde = pd.to_datetime(desde)
+    hasta = pd.to_datetime(hasta) + timedelta(days=1)
+
+    # Adaptación de fechas para que no sean imposibles.
+    if hasta >= today:
+        hasta = mañana
+    if desde >= today:
+        hasta = mañana
+        desde = today
+    if desde == hasta and desde != today:
+        hasta = pd.to_datetime(hasta) + timedelta(days=1)
+
+    #Pasar de datetime a unix
+    desde = int(time.mktime(desde.timetuple()) * 1000000000)
+    hasta = int(time.mktime(hasta.timetuple()) * 1000000000)
 
     # generar el cliente de influx.
     client = InfluxDBClient(host='localhost', port=8086)
@@ -220,7 +236,8 @@ def selectinfluxplc():
     client.switch_database('plc')
 
     # Hacer la query para seleccionar todo lo de la base de datos.
-    result = client.query('SELECT * FROM "plc"')
+    result = client.query(
+        f'SELECT * FROM "plc" where time > {desde} and time < {hasta}')
 
     # Coger solo los datos de medida de la base de datos.
     points = list(result.get_points(measurement='plc'))
@@ -242,10 +259,10 @@ def selectinfluxplc():
     return df
 
 # Adaptar los datos leidos del plc a json.
-def adaptarplc():
+def adaptarplc(desde,hasta):
 
     # Coger los datos.
-    datos = selectinfluxplc()
+    datos = selectinfluxplc(desde,hasta)
 
     # De dataframe a json.
     eljson = datos.to_json(orient='records')
@@ -253,42 +270,11 @@ def adaptarplc():
     # Devolver el json.
     return eljson
 
-#Entre fechas datos de plc.
-def fechasconcretasplc(desde, hasta):
-
-    # Leer datos de la base de datos con la información del plc.
-    datos = selectinfluxplc()
-
-    # Datos base de hoy y mañana.
-    today = datetime.now()
-    today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    today = pd.to_datetime(today)
-    mañana = pd.to_datetime(today) + timedelta(days=1)
-
-    # Formatos compatibles entre la columna timestamp y las fechas seleccionadas.
-    datos['Timestamp'] = pd.to_datetime(datos['Timestamp'])
-    desde = pd.to_datetime(desde)
-    hasta = pd.to_datetime(hasta) + timedelta(days=1)
-
-    # Adaptación de fechas para que no sean imposibles.
-    if hasta >= today:
-        hasta = mañana
-    if desde >= today:
-        hasta = mañana
-        desde = today
-    if desde == hasta and desde != today:
-        hasta = pd.to_datetime(hasta) + timedelta(days=1)
-
-    # Filtrar por fechas.
-    filtered_df = datos.loc[(datos['Timestamp'] >= desde)
-                            & (datos['Timestamp'] < hasta)]
-    return filtered_df
-
 # Descargar los datos del plc entre las fechas introducidas.
 def descargarcsvdesdehastaplc(desde, hasta):
 
     # Filtrar con fechas.
-    filtered_df = fechasconcretasplc(desde, hasta)
+    filtered_df = selectinfluxplc(desde, hasta)
 
     # Dataframe vacio para sobreescribir el csv.
     df = pd.DataFrame()
@@ -300,14 +286,14 @@ def descargarcsvdesdehastaplc(desde, hasta):
 
 # Pintar el gráfico con los datos en las fechas determinadas.
 def plotlyplcchoose(desde, hasta):
-
+    
     # Filtrado según fechas.
-    filtered_df = fechasconcretasplc(desde, hasta)
+    filtered_df = selectinfluxplc(desde, hasta)
 
-    #Poner como int para visualizar
+    # Poner como int para visualizar
     filtered_df["EntradaNode"] = filtered_df["EntradaNode"].astype(int)
 
-    #Poner como int para visualizar
+    # Poner como int para visualizar
     filtered_df["Salida"] = filtered_df["Salida"].astype(int)
 
     # Cambiar el dataframe de width a long.
@@ -328,7 +314,7 @@ def plotlyplcchoose(desde, hasta):
     fig.update_layout(font=dict(size=14),  title="Gráfico de datos de plc", yaxis_title='Valores',
                       xaxis_title='Fechas')
 
-    #Solo visible los seleccionados                  
+    # Solo visible los seleccionados                  
     #fig.for_each_trace(lambda trace: trace.update(visible="legendonly"))
 
     return fig
