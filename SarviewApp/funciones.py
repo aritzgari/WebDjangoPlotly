@@ -133,14 +133,20 @@ def selectinflux(desde, hasta):
     # Generar un dataframe del diccionario de la línea anterior.
     df = pd.DataFrame.from_dict(points)
 
+    if df.empty:
+            print('DataFrame is empty!')
+            x = datetime(2023, 2, 17)
+            y = datetime(2024, 2, 25)
+            df = selectinfluxplc(x, y)
+    else:
     # Renombrar la columna de time para que sea compatible con el resto de funciones más adelante.
-    df.rename(columns={'time': 'Timestamp'}, inplace=True)
+        df.rename(columns={'time': 'Timestamp'}, inplace=True)
 
-    # Cambiar el formato de horas a uno que no tenga en cuenta la zona horaria.
-    df['Timestamp'] = pd.to_datetime(df['Timestamp']).dt.tz_localize(None)
+        # Cambiar el formato de horas a uno que no tenga en cuenta la zona horaria.
+        df['Timestamp'] = pd.to_datetime(df['Timestamp']).dt.tz_localize(None)
 
-    # Cambiar el formato de datetime a string para mostrarlo más facil.
-    df['Timestamp'] = df['Timestamp'].astype(str)
+        # Cambiar el formato de datetime a string para mostrarlo más facil.
+        df['Timestamp'] = df['Timestamp'].astype(str)
 
     client.close()
 
